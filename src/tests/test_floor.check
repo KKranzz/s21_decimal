@@ -1,0 +1,171 @@
+#include "../s21_decimal.h"
+#include <stdio.h>
+
+
+#test floor_1
+    s21_decimal a = s21_string_to_decimal("2.7");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "2");
+    ck_assert_int_eq(code, 0);
+
+#test floor_2
+    s21_decimal a = s21_string_to_decimal("-2.7");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-3");
+    ck_assert_int_eq(code, 0);
+
+#test floor_3
+    s21_decimal a = s21_string_to_decimal("-0.0");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-0");
+    ck_assert_int_eq(code, 0);
+
+
+#test floor_positive
+    s21_decimal a = s21_string_to_decimal("2.7");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "2");
+    ck_assert_int_eq(code, 0);
+
+#test floor_negative
+    s21_decimal a = s21_string_to_decimal("-2.7");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-3");
+    ck_assert_int_eq(code, 0);
+
+#test floor_zero_negative
+    s21_decimal a = s21_string_to_decimal("-0.0");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-0");
+    ck_assert_int_eq(code, 0);
+
+#test floor_exact_integer
+    s21_decimal a = s21_string_to_decimal("5.00000000");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "5");
+    ck_assert_int_eq(code, 0);
+
+
+#test floor_tiny_fraction_positive
+    s21_decimal a = s21_string_to_decimal("0.9999999");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+    ck_assert_int_eq(code, 0);
+
+#test floor_tiny_fraction_negative
+    s21_decimal a = s21_string_to_decimal("-0.0000001");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-1");
+    ck_assert_int_eq(code, 0);
+
+#test floor_small_positive
+    s21_decimal a = s21_string_to_decimal("0.1");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+    ck_assert_int_eq(code, 0);
+
+#test floor_small_negative
+    s21_decimal a = s21_string_to_decimal("-0.1");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-1");
+    ck_assert_int_eq(code, 0);
+
+#test floor_large_positive
+    s21_decimal a = s21_string_to_decimal("123456789.987654321");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "123456789");
+    ck_assert_int_eq(code, 0);
+
+#test floor_large_negative
+    s21_decimal a = s21_string_to_decimal("-123456789.123456789");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-123456790");
+    ck_assert_int_eq(code, 0);
+
+#test floor_zero_positive
+    s21_decimal a = s21_string_to_decimal("0.0");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+    ck_assert_int_eq(code, 0);
+
+#test floor_max_scale_positive
+    s21_decimal a = s21_string_to_decimal("0.9999999999999999999999999999");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+    ck_assert_int_eq(code, 0);
+
+#test floor_max_scale_negative
+    s21_decimal a = s21_string_to_decimal("-0.9999999999999999999999999999");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-1");
+    ck_assert_int_eq(code, 0);
+
+#test floor_null_ptr
+    s21_decimal a = s21_string_to_decimal("5.5");
+    ck_assert_int_eq(s21_floor(a, NULL), 1);
+
+#test floor_one
+    s21_decimal a = s21_string_to_decimal("1.0000000000000000000000000001");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "1");
+    ck_assert_int_eq(code, 0);
+
+#test floor_minus_one
+    s21_decimal a = s21_string_to_decimal("-1.0000000000000000000000000001");
+    s21_decimal res;
+    int code = s21_floor(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-2");
+    ck_assert_int_eq(code, 0);

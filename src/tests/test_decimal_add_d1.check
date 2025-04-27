@@ -1,0 +1,82 @@
+#include "../s21_decimal.h"
+#include <stdio.h>
+
+#test test_add_decimal_14
+s21_decimal dig1 = s21_string_to_decimal("100.5");
+s21_decimal dig2 = s21_string_to_decimal("-50.25");
+s21_add(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "50.25");
+
+#test test_add_decimal_15
+s21_decimal dig1 = s21_string_to_decimal("1.5");
+s21_decimal dig2 = s21_string_to_decimal("2.75");
+s21_add(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "4.25");
+
+#test test_add_decimal_17
+s21_decimal dig1 = s21_string_to_decimal("0");
+s21_decimal dig2 = s21_string_to_decimal("123.45");
+s21_add(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "123.45");
+
+#test test_add_decimal_18
+s21_decimal dig1 = s21_string_to_decimal("0.0000001");
+s21_decimal dig2 = s21_string_to_decimal("0.0000002");
+s21_add(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "0.0000003");
+
+#test test_add_decimal_19
+s21_decimal dig1 = s21_string_to_decimal("5.75");
+s21_decimal dig2 = s21_string_to_decimal("-5.75");
+s21_add(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "0");
+
+#test test_add_decimal_20
+s21_decimal dig1 = s21_string_to_decimal("-123.45");
+s21_decimal dig2 = s21_string_to_decimal("67.8");
+s21_add(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "-55.65");
+
+#test test_add_decimal_21
+s21_decimal dig1 = s21_string_to_decimal("0.0000000000000000000000000001");
+s21_decimal dig2 = s21_string_to_decimal("0.0000000000000000000000000001");
+s21_add(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "0.0000000000000000000000000002");
+
+#test test_add_decimal_22
+s21_decimal dig1 = s21_string_to_decimal("2.505");
+s21_decimal dig2 = s21_string_to_decimal("1.505");
+s21_add(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "4.01");
+
+#test test_add_decimal_24
+s21_decimal dig1 = s21_string_to_decimal("1.0000000000000000000000000001");
+s21_decimal dig2 = s21_string_to_decimal("2.5");
+s21_add(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "3.5000000000000000000000000001");
+
+#test test_add_decimal_25
+s21_decimal dig1 = s21_string_to_decimal("1234567890123456789012345678.9");
+s21_decimal dig2 = s21_string_to_decimal("0.0000000001");
+s21_add(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "1234567890123456789012345678.9");

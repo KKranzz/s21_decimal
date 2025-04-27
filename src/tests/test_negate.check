@@ -1,0 +1,28 @@
+#include "../s21_decimal.h"
+#include <check.h>
+#include <stdio.h>
+
+#test neg_1
+    s21_decimal a = s21_string_to_decimal("123.456");
+    s21_decimal res;
+    int code = s21_negate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-123.456");
+    ck_assert_int_eq(code, 0);
+
+#test neg_2
+    s21_decimal a = s21_string_to_decimal("789.999999");
+    s21_decimal res;
+    s21_negate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-789.999999");
+
+#test neg_3
+    s21_decimal a = s21_string_to_decimal("-456.789");
+    s21_decimal res;
+    s21_negate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "456.789");

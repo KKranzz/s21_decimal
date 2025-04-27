@@ -1,0 +1,42 @@
+#include "../s21_decimal.h"
+#include <stdio.h>
+
+#test bank_round_1
+    s21_decimal a = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal b = s21_string_to_decimal("-0.0000000001");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    int code = s21_add(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_int_eq(code, 0);
+    ck_assert_str_eq(buf, "79228162514264337593543950335");
+
+#test bank_round_2
+    s21_decimal a = s21_string_to_decimal("79228162514264337593543950.334");
+    s21_decimal b = s21_string_to_decimal("0.0005");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    int code = s21_add(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_int_eq(code, 0);
+    ck_assert_str_eq(buf, "79228162514264337593543950.334");
+
+#test bank_round_3
+    s21_decimal a = s21_string_to_decimal("-79228162514264337593543950.334");
+    s21_decimal b = s21_string_to_decimal("-0.0005");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    int code = s21_add(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_int_eq(code, 0);
+    ck_assert_str_eq(buf, "-79228162514264337593543950.334");
+
+#test bank_round_4
+    s21_decimal a = s21_string_to_decimal("-79228162514264337593543950.334");
+    s21_decimal b = s21_string_to_decimal("-0.0006");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    int code = s21_add(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_int_eq(code, 0);
+    ck_assert_str_eq(buf, "-79228162514264337593543950.335");

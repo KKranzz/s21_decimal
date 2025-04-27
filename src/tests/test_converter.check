@@ -1,0 +1,145 @@
+#include "../s21_decimal.h"
+#include <check.h>
+#include <stdio.h>
+
+#test test_is_valid_itod_1
+    int expected = 1;
+    s21_decimal decimal = s21_decimal_init();
+    s21_from_int_to_decimal(expected, &decimal);
+    char buf[50];
+    s21_decimal_to_string(decimal, buf);
+    ck_assert_str_eq(buf, "1");
+
+#test test_is_valid_itod_2
+    int expected = 100;
+    s21_decimal decimal = s21_decimal_init();
+    s21_from_int_to_decimal(expected, &decimal);
+    char buf[50];
+    s21_decimal_to_string(decimal, buf);
+    ck_assert_str_eq(buf, "100");
+
+#test test_is_valid_itod_3
+    int expected = 1000;
+    s21_decimal decimal = s21_decimal_init();
+    s21_from_int_to_decimal(expected, &decimal);
+    char buf[50];
+    s21_decimal_to_string(decimal, buf);
+    ck_assert_str_eq(buf, "1000");
+
+#test test_is_valid_itod_4
+    int expected = -1000;
+    s21_decimal decimal = s21_decimal_init();
+    s21_from_int_to_decimal(expected, &decimal);
+    char buf[50];
+    s21_decimal_to_string(decimal, buf);
+    ck_assert_str_eq(buf, "-1000");
+
+#test test_is_valid_itod_5
+    int expected = 2147483647;
+    s21_decimal decimal = s21_decimal_init();
+    s21_from_int_to_decimal(expected, &decimal);
+    char buf[50];
+    s21_decimal_to_string(decimal, buf);
+    ck_assert_str_eq(buf, "2147483647");
+
+#test test_is_valid_itod_6
+    int expected = -2147483648;
+    s21_decimal decimal = s21_decimal_init();
+    s21_from_int_to_decimal(expected, &decimal);
+    char buf[50];
+    s21_decimal_to_string(decimal, buf);
+    ck_assert_str_eq(buf, "-2147483648");
+
+#test test_is_valid_ftod_1
+    s21_decimal decimal = s21_decimal_init();
+    s21_from_float_to_decimal(1.0f, &decimal);
+    char buf[50];
+    s21_decimal_to_string(decimal, buf);
+    ck_assert_str_eq(buf, "1");
+
+#test test_is_valid_ftod_2
+    s21_decimal decimal = s21_decimal_init();
+    s21_from_float_to_decimal(1.2345f, &decimal);
+    char buf[50];
+    s21_decimal_to_string(decimal, buf);
+    ck_assert_str_eq(buf, "1.2345");
+
+#test test_is_valid_ftod_3
+    s21_decimal decimal = s21_decimal_init();
+    s21_from_float_to_decimal(-1.2345f, &decimal);
+    char buf[50];
+    s21_decimal_to_string(decimal, buf);
+    ck_assert_str_eq(buf, "-1.2345");
+
+#test test_is_valid_dtoi_1
+    s21_decimal decimal = s21_string_to_decimal("12345");
+    int i = 0;
+    s21_from_decimal_to_int(decimal, &i);
+    ck_assert_int_eq(i, 12345);
+
+#test test_is_valid_dtoi_2
+    s21_decimal decimal = s21_string_to_decimal("-12345");
+    int i = 0;
+    s21_from_decimal_to_int(decimal, &i);
+    ck_assert_int_eq(i, -12345);
+
+#test test_is_valid_dtoi_3
+    s21_decimal decimal = s21_string_to_decimal("-12345.5");
+    int i = 0;
+    s21_from_decimal_to_int(decimal, &i);
+    ck_assert_int_eq(i, -12345);
+
+#test test_is_valid_dtoi_4
+    s21_decimal decimal = s21_string_to_decimal("0");
+    int i = 0;
+    s21_from_decimal_to_int(decimal, &i);
+    ck_assert_int_eq(i, 0);
+
+#test test_is_valid_dtoi_5
+    s21_decimal decimal = s21_string_to_decimal("-0");
+    int i = 0;
+    s21_from_decimal_to_int(decimal, &i);
+    ck_assert_int_eq(i, 0);
+
+#test test_is_valid_dtoi_6
+    s21_decimal decimal = s21_string_to_decimal("2147483647.1");
+    int i = 0;
+    s21_from_decimal_to_int(decimal, &i);
+    ck_assert_int_eq(i, 2147483647);
+
+#test test_is_valid_dtoi_7
+    s21_decimal decimal = s21_string_to_decimal("-2147483648.23");
+    int i = 0;
+    s21_from_decimal_to_int(decimal, &i);
+    ck_assert_int_eq(i, -2147483648);
+
+#test test_is_valid_dtof_1
+    s21_decimal decimal = s21_string_to_decimal("12345.2");
+    float i = 0;
+    s21_from_decimal_to_float(decimal, &i);
+    ck_assert_float_eq(i, 12345.2);
+
+#test test_is_valid_dtof_4
+    s21_decimal decimal = s21_string_to_decimal("0");
+    float i = 0;
+    s21_from_decimal_to_float(decimal, &i);
+    ck_assert_float_eq(i, 0);
+
+#test test_is_valid_dtof_5
+    s21_decimal decimal = s21_string_to_decimal("-0");
+    float i = 0;
+    s21_from_decimal_to_float(decimal, &i);
+    ck_assert_float_eq(i, 0);
+
+#test test_is_valid_dtoi_8
+    s21_decimal decimal = s21_string_to_decimal("79228162514264337593543950335");
+    int i = 0;
+    int code = s21_from_decimal_to_int(decimal, &i);
+    ck_assert_int_eq(code, 1);
+
+#test test_is_valid_dtoi_9
+    s21_decimal decimal = s21_string_to_decimal("-79228162514264337593543950335");
+    int i = 0;
+    int code = s21_from_decimal_to_int(decimal, &i);
+    ck_assert_int_eq(code, 1);
+   

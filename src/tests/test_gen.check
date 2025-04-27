@@ -1,0 +1,468 @@
+#include "../s21_decimal.h"
+#include <check.h>
+#include <stdio.h>
+
+#test add_positive_numbers
+    s21_decimal a = s21_string_to_decimal("123.45");
+    s21_decimal b = s21_string_to_decimal("67.89");
+    s21_decimal res;
+    int code = s21_add(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "191.34");
+    ck_assert_int_eq(code, 0);
+
+#test add_negative_numbers
+    s21_decimal a = s21_string_to_decimal("-100.5");
+    s21_decimal b = s21_string_to_decimal("-200.75");
+    s21_decimal res;
+    int code = s21_add(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-301.25");
+    ck_assert_int_eq(code, 0);
+
+#test add_overflow_max
+    s21_decimal a = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal b = s21_string_to_decimal("1");
+    s21_decimal res;
+    int code = s21_add(a, b, &res);
+    ck_assert_int_eq(code, 1);
+
+#test add_underflow_min
+    s21_decimal a = s21_string_to_decimal("-79228162514264337593543950335");
+    s21_decimal b = s21_string_to_decimal("-1");
+    s21_decimal res;
+    int code = s21_add(a, b, &res);
+    ck_assert_int_eq(code, 2);
+
+#test add_mixed_signs
+    s21_decimal a = s21_string_to_decimal("500.0");
+    s21_decimal b = s21_string_to_decimal("-300.0");
+    s21_decimal res;
+    int code = s21_add(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "200");
+    ck_assert_int_eq(code, 0);
+
+
+#test sub_normal_case
+    s21_decimal a = s21_string_to_decimal("100.0");
+    s21_decimal b = s21_string_to_decimal("50.5");
+    s21_decimal res;
+    int code = s21_sub(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "49.5");
+    ck_assert_int_eq(code, 0);
+
+#test sub_negative_result
+    s21_decimal a = s21_string_to_decimal("50.0");
+    s21_decimal b = s21_string_to_decimal("100.0");
+    s21_decimal res;
+    int code = s21_sub(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-50");
+    ck_assert_int_eq(code, 0);
+
+#test sub_max_values
+    s21_decimal a = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal b = s21_string_to_decimal("0.1");
+    s21_decimal res;
+    int code = s21_sub(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "79228162514264337593543950335");
+    ck_assert_int_eq(code, 0);
+
+#test sub_inf_overflow
+    s21_decimal a = s21_string_to_decimal("-79228162514264337593543950335");
+    s21_decimal b = s21_string_to_decimal("1");
+    s21_decimal res;
+    int code = s21_sub(a, b, &res);
+    ck_assert_int_eq(code, 2);
+
+
+#test mul_simple
+    s21_decimal a = s21_string_to_decimal("12.5");
+    s21_decimal b = s21_string_to_decimal("4");
+    s21_decimal res;
+    int code = s21_mul(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "50");
+    ck_assert_int_eq(code, 0);
+
+#test mul_overflow
+    s21_decimal a = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal b = s21_string_to_decimal("2");
+    s21_decimal res;
+    int code = s21_mul(a, b, &res);
+    ck_assert_int_eq(code, 1);
+
+#test mul_fractional
+    s21_decimal a = s21_string_to_decimal("0.1");
+    s21_decimal b = s21_string_to_decimal("0.1");
+    s21_decimal res;
+    int code = s21_mul(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0.01");
+    ck_assert_int_eq(code, 0);
+
+#test mul_big_numbers
+    s21_decimal a = s21_string_to_decimal("1234567890123456789012345678");
+    s21_decimal b = s21_string_to_decimal("2");
+    s21_decimal res;
+    int code = s21_mul(a, b, &res);
+    char buf[100];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "2469135780246913578024691356");
+    ck_assert_int_eq(code, 0);
+
+
+#test div_by_zero
+    s21_decimal a = s21_string_to_decimal("100");
+    s21_decimal b = s21_string_to_decimal("-0.0");
+    s21_decimal res;
+    int code = s21_div(a, b, &res);
+    ck_assert_int_eq(code, 3);
+
+#test div_by_zero_2
+    s21_decimal a = s21_string_to_decimal("100");
+    s21_decimal b = s21_string_to_decimal("0.0");
+    s21_decimal res;
+    int code = s21_div(a, b, &res);
+    ck_assert_int_eq(code, 3);
+
+#test div_simple
+    s21_decimal a = s21_string_to_decimal("100");
+    s21_decimal b = s21_string_to_decimal("4");
+    s21_decimal res;
+    int code = s21_div(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "25");
+    ck_assert_int_eq(code, 0);
+
+#test div_fractional
+    s21_decimal a = s21_string_to_decimal("10");
+    s21_decimal b = s21_string_to_decimal("3");
+    s21_decimal res;
+    int code = s21_div(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "3.3333333333333333333333333333");
+    ck_assert_int_eq(code, 0);
+
+#test div_large_scale
+    s21_decimal a = s21_string_to_decimal("1");
+    s21_decimal b = s21_string_to_decimal("3");
+    s21_decimal res;
+    int code = s21_div(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0.3333333333333333333333333333");
+    ck_assert_int_eq(code, 0);
+
+#test div_negative_values
+    s21_decimal a = s21_string_to_decimal("-15");
+    s21_decimal b = s21_string_to_decimal("3");
+    s21_decimal res;
+    int code = s21_div(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-5");
+    ck_assert_int_eq(code, 0);
+
+
+#test add_error_1
+    s21_decimal max = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal one = s21_string_to_decimal("1");
+    s21_decimal res;
+    ck_assert_int_eq(s21_add(max, one, &res), 1);
+
+#test add_error_2
+    s21_decimal min = s21_string_to_decimal("-79228162514264337593543950335");
+    s21_decimal one = s21_string_to_decimal("-1");
+    s21_decimal res;
+    ck_assert_int_eq(s21_add(min, one, &res), 2);
+
+#test mul_error_1
+    s21_decimal max = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal two = s21_string_to_decimal("2");
+    s21_decimal res;
+    ck_assert_int_eq(s21_mul(max, two, &res), 1);
+
+#test div_error_1
+    s21_decimal val = s21_string_to_decimal("1");
+    s21_decimal zero = s21_string_to_decimal("0");
+    s21_decimal res;
+    ck_assert_int_eq(s21_div(val, zero, &res), 3);
+
+
+#test add_edge_1
+    s21_decimal a = s21_string_to_decimal("0.0000000000000000000000000001");
+    s21_decimal b = s21_string_to_decimal("0.0000000000000000000000000001");
+    s21_decimal res;
+    s21_add(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0.0000000000000000000000000002");
+
+#test sub_edge_1
+    s21_decimal a = s21_string_to_decimal("0.000000000000000000000000000000000001");
+    s21_decimal b = s21_string_to_decimal("0.000000000000000000000000000000000001");
+    s21_decimal res;
+    s21_sub(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+
+#test mul_edge_1
+    s21_decimal a = s21_string_to_decimal("10000000000000000000000000000");
+    s21_decimal b = s21_string_to_decimal("10000000000000000000000000000");
+    s21_decimal res;
+    int code = s21_mul(a, b, &res);
+    ck_assert_int_eq(code, 1);
+
+#test div_edge_1
+    s21_decimal a = s21_string_to_decimal("0.0000000000000000000000000001");
+    s21_decimal b = s21_string_to_decimal("1");
+    s21_decimal res;
+    s21_div(a, b, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0.0000000000000000000000000001");
+
+
+#test add_1
+    s21_decimal a = s21_string_to_decimal("5");
+    s21_decimal b = s21_string_to_decimal("3");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_add(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "8");
+
+#test add_2
+    s21_decimal a = s21_string_to_decimal("123.4567");
+    s21_decimal b = s21_string_to_decimal("45.67");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_add(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "169.1267");
+
+#test add_3
+    s21_decimal a = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal b = s21_string_to_decimal("0.999999999");
+    s21_decimal res = {0};
+    int code = s21_add(a, b, &res);
+    ck_assert_int_eq(code, 1);
+
+
+#test sub_1
+    s21_decimal a = s21_string_to_decimal("10");
+    s21_decimal b = s21_string_to_decimal("3");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_sub(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "7");
+
+#test sub_2
+    s21_decimal a = s21_string_to_decimal("5");
+    s21_decimal b = s21_string_to_decimal("10");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_sub(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-5");
+
+
+#test mul_1
+    s21_decimal a = s21_string_to_decimal("123456.789");
+    s21_decimal b = s21_string_to_decimal("0");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_mul(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+
+#test mul_2
+    s21_decimal a = s21_string_to_decimal("0.0001");
+    s21_decimal b = s21_string_to_decimal("0.0001");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_mul(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0.00000001");
+
+#test mul_3
+    s21_decimal a = s21_string_to_decimal("1234567890123456789012345678.9");
+    s21_decimal b = s21_string_to_decimal("2");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_mul(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "2469135780246913578024691357.8");
+
+
+#test div_1
+    s21_decimal a = s21_string_to_decimal("100");
+    s21_decimal b = s21_string_to_decimal("25");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_div(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "4");
+
+#test div_2
+    s21_decimal a = s21_string_to_decimal("1");
+    s21_decimal b = s21_string_to_decimal("3");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_div(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0.3333333333333333333333333333");
+
+#test div_3
+    s21_decimal a = s21_string_to_decimal("0.0000000001");
+    s21_decimal b = s21_string_to_decimal("0.0000000002");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_div(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0.5");
+
+
+#test error_add_overflow
+    s21_decimal max = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal one = s21_string_to_decimal("1");
+    s21_decimal res = {0};
+    int code = s21_add(max, one, &res);
+    ck_assert_int_eq(code, 1);
+
+#test error_div_zero
+    s21_decimal a = s21_string_to_decimal("100");
+    s21_decimal b = s21_string_to_decimal("0");
+    s21_decimal res = {0};
+    ck_assert_int_eq(s21_div(a, b, &res), 3);
+
+
+#test edge_add_max_scale
+    s21_decimal a = s21_string_to_decimal("0.9999999999999999999999999999");
+    s21_decimal b = s21_string_to_decimal("0.0000000000000000000000000001");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_add(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "1");
+
+#test edge_sub_precision
+    s21_decimal a = s21_string_to_decimal("1.0000000000000000000000000000");
+    s21_decimal b = s21_string_to_decimal("0.0000000000000000000000000001");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_sub(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0.9999999999999999999999999999");
+
+
+#test error_add_overflow_1
+    s21_decimal max = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal one = s21_string_to_decimal("1");
+    s21_decimal res = {0};
+    ck_assert_int_eq(s21_add(max, one, &res), 1);
+
+#test error_add_overflow_2
+    s21_decimal a = s21_string_to_decimal("79228162514264337593543950334");
+    s21_decimal b = s21_string_to_decimal("0.0000000001");
+    s21_decimal res = {0};
+    ck_assert_int_eq(s21_add(a, b, &res), 0);
+
+#test error_sub_underflow_1
+    s21_decimal min = s21_string_to_decimal("-79228162514264337593543950335");
+    s21_decimal one = s21_string_to_decimal("1");
+    s21_decimal res = {0};
+    ck_assert_int_eq(s21_sub(min, one, &res), 2);
+
+#test error_mul_overflow_1
+    s21_decimal max = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal two = s21_string_to_decimal("2");
+    s21_decimal res = {0};
+    ck_assert_int_eq(s21_mul(max, two, &res), 1);
+
+#test error_mul_underflow_1
+    s21_decimal min = s21_string_to_decimal("-79228162514264337593543950335");
+    s21_decimal two = s21_string_to_decimal("2");
+    s21_decimal res = {0};
+    ck_assert_int_eq(s21_mul(min, two, &res), 2);
+
+#test error_div_zero_1
+    s21_decimal a = s21_string_to_decimal("100");
+    s21_decimal b = s21_string_to_decimal("0");
+    s21_decimal res = {0};
+    ck_assert_int_eq(s21_div(a, b, &res), 3);
+
+#test error_div_zero_2
+    s21_decimal a = s21_string_to_decimal("-123.45");
+    s21_decimal b = s21_string_to_decimal("0.00");
+    s21_decimal res = {0};
+    ck_assert_int_eq(s21_div(a, b, &res), 3);
+
+
+#test rounding_add_1
+    s21_decimal a = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal b = s21_string_to_decimal("-0.6");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_add(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "79228162514264337593543950334");
+
+#test rounding_sub_1
+    s21_decimal a = s21_string_to_decimal("5.5");
+    s21_decimal b = s21_string_to_decimal("0.5");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_sub(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "5");
+
+#test rounding_div_1
+    s21_decimal a = s21_string_to_decimal("10");
+    s21_decimal b = s21_string_to_decimal("3");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_div(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "3.3333333333333333333333333333");
+
+#test rounding_div_2
+    s21_decimal a = s21_string_to_decimal("1.00");
+    s21_decimal b = s21_string_to_decimal("3.00");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_div(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0.3333333333333333333333333333");
+
+#test edge_rounding_overflow_1
+    s21_decimal a = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal b = s21_string_to_decimal("0.5");
+    s21_decimal res = {0};
+    ck_assert_int_eq(s21_add(a, b, &res), 1);
+
+#test edge_rounding_precision_loss
+    s21_decimal a = s21_string_to_decimal("0.0000000000000000000000000001");
+    s21_decimal b = s21_string_to_decimal("0.0000000000000000000000000001");
+    s21_decimal res = {0};
+    char buf[100] = {0};
+    s21_mul(a, b, &res);
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+

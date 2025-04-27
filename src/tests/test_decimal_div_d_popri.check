@@ -1,0 +1,81 @@
+#include "../s21_decimal.h"
+#include <stdio.h>
+
+
+#test test_div_decimal_1
+s21_decimal dig1 = s21_string_to_decimal("100");
+s21_decimal dig2 = s21_string_to_decimal("0");
+int status = s21_div(dig1, dig2, &dig1);
+ck_assert_int_eq(status, 3);
+
+#test test_div_decimal_2
+s21_decimal dig1 = s21_string_to_decimal("0");
+s21_decimal dig2 = s21_string_to_decimal("5.5");
+s21_div(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "0");
+
+#test test_div_decimal_3
+s21_decimal dig1 = s21_string_to_decimal("-15");
+s21_decimal dig2 = s21_string_to_decimal("-3");
+s21_div(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "5");
+
+#test test_div_decimal_4
+s21_decimal dig1 = s21_string_to_decimal("-20.8");
+s21_decimal dig2 = s21_string_to_decimal("4");
+s21_div(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "-5.2");
+
+#test test_div_decimal_5
+s21_decimal dig1 = s21_string_to_decimal("5");
+s21_decimal dig2 = s21_string_to_decimal("2");
+s21_div(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "2.5");
+
+#test test_div_decimal_6
+s21_decimal dig1 = s21_string_to_decimal("0.06");
+s21_decimal dig2 = s21_string_to_decimal("0.3");
+s21_div(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "0.2");
+
+#test test_div_decimal_7
+s21_decimal dig1 = s21_string_to_decimal("79228162514264337593543950335");
+s21_decimal dig2 = s21_string_to_decimal("1");
+s21_div(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "79228162514264337593543950335");
+
+#test test_div_decimal_8
+s21_decimal dig1 = s21_string_to_decimal("1");
+s21_decimal dig2 = s21_string_to_decimal("3");
+s21_div(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "0.3333333333333333333333333333");
+
+#test test_div_decimal_9
+s21_decimal dig1 = s21_string_to_decimal("1");
+s21_decimal dig2 = s21_string_to_decimal("0.5");
+s21_div(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "2");
+
+#test test_div_decimal_10
+s21_decimal dig1 = s21_string_to_decimal("0.0000000000000000000000000001");
+s21_decimal dig2 = s21_string_to_decimal("10");
+s21_div(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "0");

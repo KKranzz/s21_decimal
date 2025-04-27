@@ -1,0 +1,100 @@
+#include "../s21_decimal.h"
+#include <stdio.h>
+
+#test test_sub_zero_result
+s21_decimal a = s21_string_to_decimal("1");
+s21_decimal b = s21_string_to_decimal("1");
+s21_decimal num_result;
+char result[32] = {0};
+int status = s21_sub(a, b, &num_result);
+s21_decimal_to_string(num_result, result);
+ck_assert_int_eq(status, 0); // OK
+ck_assert_str_eq(result, "0");
+
+#test test_sub_large_decimal
+s21_decimal a = s21_string_to_decimal("792281625142643375935439503.35");
+s21_decimal b = s21_string_to_decimal("0.35");
+s21_decimal num_result;
+char result[32] = {0};
+int status = s21_sub(a, b, &num_result);
+s21_decimal_to_string(num_result, result);
+ck_assert_int_eq(status, 0);
+ck_assert_str_eq(result, "792281625142643375935439503");
+
+#test test_sub_underflow
+s21_decimal min_val = s21_string_to_decimal("-79228162514264337593543950335");
+s21_decimal one = s21_string_to_decimal("1");
+s21_decimal num_result;
+char result[32] = {0};
+int status = s21_sub(min_val, one, &num_result);
+s21_decimal_to_string(num_result, result);
+ck_assert_int_eq(status, 2); // UNDERFLOW
+
+#test test_sub_overflow
+s21_decimal max_val = s21_string_to_decimal("79228162514264337593543950335");
+s21_decimal minus_one = s21_string_to_decimal("-1");
+s21_decimal num_result;
+char result[32] = {0};
+int status = s21_sub(max_val, minus_one, &num_result);
+s21_decimal_to_string(num_result, result);
+ck_assert_int_eq(status, 1); // OVERFLOW
+
+#test test_sub_diff_signs
+s21_decimal a = s21_string_to_decimal("5");
+s21_decimal b = s21_string_to_decimal("-3");
+s21_decimal num_result;
+char result[32] = {0};
+int status = s21_sub(a, b, &num_result);
+s21_decimal_to_string(num_result, result);
+ck_assert_int_eq(status, 0);
+ck_assert_str_eq(result, "8");
+
+#test test_sub_negative_result
+s21_decimal a = s21_string_to_decimal("-5");
+s21_decimal b = s21_string_to_decimal("3");
+s21_decimal num_result;
+char result[32] = {0};
+int status = s21_sub(a, b, &num_result);
+s21_decimal_to_string(num_result, result);
+ck_assert_int_eq(status, 0);
+ck_assert_str_eq(result, "-8");
+
+#test test_sub_different_scales
+s21_decimal a = s21_string_to_decimal("1.500"); // scale 3
+s21_decimal b = s21_string_to_decimal("0.25");  // scale 2
+s21_decimal num_result;
+char result[32] = {0};
+int status = s21_sub(a, b, &num_result);
+s21_decimal_to_string(num_result, result);
+ck_assert_int_eq(status, 0);
+ck_assert_str_eq(result, "1.25");
+
+#test test_sub_max_minus_zero
+s21_decimal max_val = s21_string_to_decimal("79228162514264337593543950335");
+s21_decimal zero = s21_string_to_decimal("0");
+s21_decimal num_result;
+char result[32] = {0};
+int status = s21_sub(max_val, zero, &num_result);
+s21_decimal_to_string(num_result, result);
+ck_assert_int_eq(status, 0);
+ck_assert_str_eq(result, "79228162514264337593543950335");
+
+#test test_sub_min_minus_zero
+s21_decimal min_val = s21_string_to_decimal("-79228162514264337593543950335");
+s21_decimal zero = s21_string_to_decimal("0");
+s21_decimal num_result;
+char result[32] = {0};
+int status = s21_sub(min_val, zero, &num_result);
+s21_decimal_to_string(num_result, result);
+ck_assert_int_eq(status, 0);
+ck_assert_str_eq(result, "-79228162514264337593543950335");
+
+#test test_sub_precision_loss
+s21_decimal a = s21_string_to_decimal("1000000000000000000000000000");
+s21_decimal b = s21_string_to_decimal("0.9999999999999999999999999999");
+s21_decimal num_result;
+char result[32] = {0};
+int status = s21_sub(a, b, &num_result);
+s21_decimal_to_string(num_result, result);
+ck_assert_int_eq(status, 0);
+ck_assert_str_eq(result, "999999999999999999999999999");

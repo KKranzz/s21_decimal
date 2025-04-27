@@ -1,0 +1,150 @@
+#include "../s21_decimal.h"
+#include <check.h>
+#include <stdio.h>
+
+#test truncate_positive_1
+    s21_decimal a = s21_string_to_decimal("123.456");
+    s21_decimal res;
+    int code = s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "123");
+    ck_assert_int_eq(code, 0);
+
+#test truncate_positive_2
+    s21_decimal a = s21_string_to_decimal("789.999999");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "789");
+
+#test truncate_negative_1
+    s21_decimal a = s21_string_to_decimal("-456.789");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-456");
+
+#test truncate_zero_frac
+    s21_decimal a = s21_string_to_decimal("123.000");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "123");
+
+#test truncate_max_scale
+    s21_decimal a = s21_string_to_decimal("1.0000000000000000000000000000");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "1");
+
+
+#test truncate_small_frac
+    s21_decimal a = s21_string_to_decimal("0.000001");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+
+#test truncate_negative_zero
+    s21_decimal a = s21_string_to_decimal("-0.999");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-0");
+
+#test truncate_no_frac
+    s21_decimal a = s21_string_to_decimal("42");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "42");
+
+#test truncate_edge_case_1
+    s21_decimal a = s21_string_to_decimal("0.9999999999999999999999999999");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+
+#test truncate_edge_case_2
+    s21_decimal a = s21_string_to_decimal("999999999999999999999999999.9");
+    s21_decimal res;
+    int code = s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "999999999999999999999999999");
+    ck_assert_int_eq(code, 0);
+
+#test truncate_null_ptr
+    s21_decimal a = s21_string_to_decimal("123.456");
+    int code = s21_truncate(a, NULL);
+    ck_assert_int_eq(code, 1);
+
+#test truncate_negative_rounding
+    s21_decimal a = s21_string_to_decimal("-9999999999999999999999999.999");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-9999999999999999999999999");
+
+#test truncate_mixed_signs
+    s21_decimal a = s21_string_to_decimal("-123456789.987654321");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-123456789");
+
+#test truncate_zero_input
+    s21_decimal a = s21_string_to_decimal("0.0");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+
+#test truncate_large_frac
+    s21_decimal a = s21_string_to_decimal("1.9999999999999999999999999999");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "1");
+
+#test truncate_max_int
+    s21_decimal a = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal res;
+    int code = s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "79228162514264337593543950335");
+    ck_assert_int_eq(code, 0);
+
+#test truncate_min_int
+    s21_decimal a = s21_string_to_decimal("-79228162514264337593543950335");
+    s21_decimal res;
+    int code = s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-79228162514264337593543950335");
+    ck_assert_int_eq(code, 0);
+
+
+#test truncate_multiple_zeros
+    s21_decimal a = s21_string_to_decimal("000000123.456000");
+    s21_decimal res;
+    s21_truncate(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "123");

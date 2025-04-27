@@ -1,0 +1,178 @@
+#include "../s21_decimal.h"
+#include <check.h>
+#include <stdio.h>
+
+#test round_1
+    s21_decimal a = s21_string_to_decimal("2.7");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "3");
+    ck_assert_int_eq(code, 0);
+
+#test round_2
+    s21_decimal a = s21_string_to_decimal("2.7");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "3");
+    ck_assert_int_eq(code, 0);
+
+#test round_3
+    s21_decimal a = s21_string_to_decimal("2.445");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "2");
+    ck_assert_int_eq(code, 0);
+
+#test round_positive_up
+    s21_decimal a = s21_string_to_decimal("2.7");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "3");
+    ck_assert_int_eq(code, 0);
+
+#test round_positive_down
+    s21_decimal a = s21_string_to_decimal("2.4");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "2");
+    ck_assert_int_eq(code, 0);
+
+#test round_negative_up
+    s21_decimal a = s21_string_to_decimal("-2.7");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-3");
+    ck_assert_int_eq(code, 0);
+
+#test round_negative_down
+    s21_decimal a = s21_string_to_decimal("-2.4");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-2");
+    ck_assert_int_eq(code, 0);
+
+#test round_banking_odd
+    s21_decimal a = s21_string_to_decimal("3.5");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "4");
+    ck_assert_int_eq(code, 0);
+
+#test round_max_decimal
+    s21_decimal a = s21_string_to_decimal("7922816251426433759354395033.5");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "7922816251426433759354395034");
+    ck_assert_int_eq(code, 0);
+
+#test round_large_fraction
+    s21_decimal a = s21_string_to_decimal("123.456789");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "123");
+    ck_assert_int_eq(code, 0);
+
+#test round_tiny_fraction
+    s21_decimal a = s21_string_to_decimal("0.0000001");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+    ck_assert_int_eq(code, 0);
+
+#test round_integer
+    s21_decimal a = s21_string_to_decimal("5.00000000");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "5");
+    ck_assert_int_eq(code, 0);
+
+#test round_zero
+    s21_decimal a = s21_string_to_decimal("0.0");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+    ck_assert_int_eq(code, 0);
+
+#test round_max_scale
+    s21_decimal a = s21_string_to_decimal("0.0000000000000000000000000001");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "0");
+    ck_assert_int_eq(code, 0);
+
+#test round_multiple_digits_up
+    s21_decimal a = s21_string_to_decimal("123.99");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "124");
+    ck_assert_int_eq(code, 0);
+
+#test round_multiple_digits_down
+    s21_decimal a = s21_string_to_decimal("-123.01");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-123");
+    ck_assert_int_eq(code, 0);
+
+#test round_cascading
+    s21_decimal a = s21_string_to_decimal("9.9999999");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "10");
+    ck_assert_int_eq(code, 0);
+
+#test round_null_ptr
+    s21_decimal a = s21_string_to_decimal("5.5");
+    ck_assert_int_eq(s21_round(a, NULL), 1);
+
+#test round_half_up_combination
+    s21_decimal a = s21_string_to_decimal("3.1415926535");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "3");
+    ck_assert_int_eq(code, 0);
+
+#test round_large_negative
+    s21_decimal a = s21_string_to_decimal("-123456789.987654321");
+    s21_decimal res;
+    int code = s21_round(a, &res);
+    char buf[50];
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "-123456790");
+    ck_assert_int_eq(code, 0);

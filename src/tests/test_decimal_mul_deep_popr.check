@@ -1,0 +1,58 @@
+#include "../s21_decimal.h"
+#include <stdio.h>
+
+#test test_mul_decimal_4
+s21_decimal dig1 = s21_string_to_decimal("123456.78");
+s21_decimal dig2 = s21_string_to_decimal("0");
+s21_mul(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "0");
+
+#test test_mul_decimal_5
+s21_decimal dig1 = s21_string_to_decimal("-3");
+s21_decimal dig2 = s21_string_to_decimal("-4");
+s21_mul(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "12");
+
+#test test_mul_decimal_6
+s21_decimal dig1 = s21_string_to_decimal("5.5");
+s21_decimal dig2 = s21_string_to_decimal("-2");
+s21_mul(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "-11");
+
+#test test_mul_decimal_7
+s21_decimal dig1 = s21_string_to_decimal("0.2");
+s21_decimal dig2 = s21_string_to_decimal("0.3");
+s21_mul(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "0.06");
+
+#test test_mul_decimal_9
+s21_decimal dig1 = s21_string_to_decimal("0.0000000000000000000000000001");
+s21_decimal dig2 = s21_string_to_decimal("10");
+s21_mul(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "0.000000000000000000000000001");
+
+#test test_mul_decimal_10
+s21_decimal dig1 = s21_string_to_decimal("-79228162514264337593543950335");
+s21_decimal dig2 = s21_string_to_decimal("1");
+s21_mul(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "-79228162514264337593543950335");
+
+#test test_mul_decimal_11
+s21_decimal dig1 = s21_string_to_decimal("1.1111111111111111111111111111");
+s21_decimal dig2 = s21_string_to_decimal("3");
+s21_mul(dig1, dig2, &dig1);
+char result[32] = {0};
+s21_decimal_to_string(dig1, result);
+ck_assert_str_eq(result, "3.3333333333333333333333333333");

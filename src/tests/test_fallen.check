@@ -1,0 +1,127 @@
+#include "../s21_decimal.h"
+#include <check.h>
+#include <stdio.h>
+
+#test fallen_1
+    s21_decimal val1 = s21_string_to_decimal("59228162514264337593543950334");
+    s21_decimal val2 = s21_string_to_decimal("0.500001");
+    s21_decimal res = s21_decimal_init();
+    s21_add(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "59228162514264337593543950335");
+
+#test fallen_2
+    s21_decimal val1 = s21_string_to_decimal("59228162514264337593543950333");
+    s21_decimal val2 = s21_string_to_decimal("0.46");
+    s21_decimal res = s21_decimal_init();
+    s21_add(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+    ck_assert_str_eq(buf, "59228162514264337593543950333");
+
+#test fallen_3
+    s21_decimal val1 = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal val2 = s21_string_to_decimal("0.46");
+    s21_decimal res = s21_decimal_init();
+    s21_add(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+ 
+    ck_assert_str_eq(buf, "79228162514264337593543950335");
+
+#test fallen_4
+    s21_decimal val1 = s21_string_to_decimal("7922816251426433759354395033.5");
+    s21_decimal val2 = s21_string_to_decimal("0.04");
+    s21_decimal res = s21_decimal_init();
+    s21_add(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+   
+    ck_assert_str_eq(buf, "7922816251426433759354395033.5");
+
+#test fallen_5
+    s21_decimal val1 = s21_string_to_decimal("-79228162514264337593543950335");
+    s21_decimal val2 = s21_string_to_decimal("-1");
+    s21_decimal res = s21_decimal_init();
+    int code = s21_add(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+    ck_assert_int_eq(code, 2);
+    ck_assert_str_eq(buf, "0");
+
+#test fallen_6
+    s21_decimal val1 = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal val2 = s21_string_to_decimal("7");
+    s21_decimal res = s21_decimal_init();
+    int code = s21_mul(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+    ck_assert_int_eq(code, 1);
+    ck_assert_str_eq(buf, "0");
+
+#test fallen_8
+    s21_decimal val1 = s21_string_to_decimal("-79228162514264337593543950335");
+    s21_decimal val2 = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal res = s21_decimal_init();
+    int code = s21_mul(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+    ck_assert_int_eq(code, 2);
+    ck_assert_str_eq(buf, "0");
+
+
+
+#test fallen_7_1
+    s21_decimal val1 = s21_string_to_decimal("0.1");
+    s21_decimal val2 = s21_string_to_decimal("1");
+    s21_decimal res = s21_decimal_init();
+    int code = s21_div(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+    ck_assert_int_eq(code, 0);
+    ck_assert_str_eq(buf, "0.1");
+
+#test fallen_7_2
+    s21_decimal val1 = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal val2 = s21_string_to_decimal("1");
+    s21_decimal res = s21_decimal_init();
+    int code = s21_div(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+    ck_assert_int_eq(code, 0);
+    ck_assert_str_eq(buf, "79228162514264337593543950335");
+
+#test fallen_7_3
+    s21_decimal val1 = s21_string_to_decimal("0.1");
+    s21_decimal val2 = s21_string_to_decimal("0.01");
+    s21_decimal res = s21_decimal_init();
+    int code = s21_div(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+    ck_assert_int_eq(code, 0);
+    ck_assert_str_eq(buf, "10");
+
+#test fallen_7
+    s21_decimal val1 = s21_string_to_decimal("79228162514264337593543950335");
+    s21_decimal val2 = s21_string_to_decimal("0.1");
+    s21_decimal res = s21_decimal_init();
+    int code = s21_div(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+    s21_show_decimal(res);
+    s21_show_bits(res);
+    ck_assert_int_eq(code, 1);
+    ck_assert_str_eq(buf, "0");
+
+#test fallen_9
+    s21_decimal val1 = s21_string_to_decimal("0.7922816251426433759354395033");
+    s21_decimal val2 = s21_string_to_decimal("0.1");
+    s21_decimal res = s21_decimal_init();
+    int code = s21_mul(val1, val2, &res);
+    char buf[30] = {0};
+    s21_decimal_to_string(res, buf);
+    s21_show_decimal(res);
+    s21_show_bits(res);
+    ck_assert_int_eq(code, 0);
+    ck_assert_str_eq(buf, "0.0792281625142643375935439503");

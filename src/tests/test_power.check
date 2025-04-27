@@ -1,0 +1,16 @@
+#include "../s21_utils.h"
+#include <check.h>
+#include <stdio.h>
+
+
+#test test_1
+	s21_get_power_of_two_1(THIRTY_THREE);
+
+#test test_2
+	s21_get_power_of_two_2(SIXTY_SIX);
+
+#test test_3
+	s21_get_power_of_two_3(THIRTY_THREE);
+
+#test test_4
+	s21_get_power_of_two(MAX_VALUE);
